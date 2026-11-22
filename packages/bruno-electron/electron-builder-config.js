@@ -4,6 +4,10 @@ const isBenchmark = process.env.BRUNO_BENCHMARK === 'true';
 
 const config = {
   appId: 'com.usebruno.app',
+  // The release workflow publishes assets with `gh release create`.
+  // Without this, electron-builder auto-selects `onTagOrDraft` in CI,
+  // detects GitHub from the repository, and fails when GH_TOKEN is absent.
+  publish: null,
   productName: isBenchmark ? 'Bruno Benchmark' : 'Bruno',
   extraMetadata: {
     brunoBuild: {

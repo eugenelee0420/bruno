@@ -29,6 +29,7 @@
 - [x] 5.1 Add the `publish` job that `needs` both build jobs, runs on `ubuntu-24.04`, declares `permissions: contents: write`, downloads both Actions artifacts into one directory, re-checks that the release does not exist, and runs `gh release create "$TAG" --target "$GITHUB_REF_NAME" --title "$TAG" --notes "See https://github.com/usebruno/bruno/releases/tag/$TAG" <files>`; verify with `gh release view "$TAG" --json isDraft,targetCommitish,assets` that it is live, targets `release/vX.Y.Z`, and lists the AppImage, the x64/arm64/combined `.exe` installers, and their `.blockmap` files.
 - [ ] 5.2 Verify duplicate protection end to end: push another commit to the same released branch, confirm the run fails at `validate`, and confirm via `gh release view --json assets` that asset IDs and sizes are unchanged.
 - [ ] 5.3 Verify failure atomicity: introduce a temporary build failure on a test branch (for example `VERSION=bad` or a failing renderer build), confirm no tag and no release are created with `git ls-remote --tags` and `gh release view`, then revert the temporary change and confirm a rerun succeeds.
+- [x] 5.4 Set `publish: null` in `packages/bruno-electron/electron-builder-config.js` so electron-builder's CI `onTagOrDraft` default cannot construct a `GitHubPublisher`; verify with `CI=true npm run build:electron:linux` that the stock build succeeds without `GH_TOKEN` and that no `latest-linux.yml` or `app-update.yml` is produced.
 
 ## 6. Integration verification
 
