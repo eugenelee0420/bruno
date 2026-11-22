@@ -36,17 +36,17 @@ Packaged application metadata and artifact file names SHALL use the version deri
 
 ### Requirement: Artifact coverage
 
-Each successful run SHALL produce, through the repository's stock `dist:linux` and `dist:win` commands, AppImage, deb, and rpm packages for Linux x64 and arm64, and NSIS installers for Windows x64 and arm64.
+Each successful run SHALL produce, through the repository's stock `dist:linux` and `dist:win` commands, one AppImage for Linux x64 and NSIS installers for Windows x64 and arm64, together with the combined multi-arch installer the nsis target emits for a two-arch build.
 
 #### Scenario: Linux artifacts
 
 - **WHEN** the Linux build succeeds
-- **THEN** it produces `x86_64` and `arm64` AppImages, `amd64` and `arm64` deb packages, and `x86_64` and `aarch64` rpm packages
+- **THEN** it produces exactly one `x86_64` AppImage and no deb or rpm packages
 
 #### Scenario: Windows artifacts
 
 - **WHEN** the Windows build succeeds
-- **THEN** it produces NSIS installers for x64 and arm64
+- **THEN** it produces per-arch x64 and arm64 NSIS installers and the combined multi-arch installer
 
 ### Requirement: Complete release publication
 
@@ -80,12 +80,17 @@ If the derived tag or its release already exists, the run SHALL fail before publ
 
 Every published package SHALL contain the PTY binary for its own platform and architecture and SHALL NOT depend on the runner host's platform binary.
 
+#### Scenario: Windows x64 package
+
+- **WHEN** the Windows x64 installer is packaged
+- **THEN** its dependency tree contains the `win32-x64` PTY binary
+
 #### Scenario: Windows arm64 package
 
 - **WHEN** the Windows arm64 installer is packaged
 - **THEN** its dependency tree contains the `win32-arm64` PTY binary
 
-#### Scenario: Linux arm64 package
+#### Scenario: Linux package
 
-- **WHEN** the Linux arm64 AppImage is packaged
-- **THEN** its dependency tree contains the `linux-arm64` PTY binary
+- **WHEN** the Linux x64 AppImage is packaged
+- **THEN** its dependency tree contains the `linux-x64` PTY binary
