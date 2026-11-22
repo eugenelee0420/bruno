@@ -27,14 +27,14 @@
 ## 5. Publish the release
 
 - [x] 5.1 Add the `publish` job that `needs` both build jobs, runs on `ubuntu-24.04`, declares `permissions: contents: write`, downloads both Actions artifacts into one directory, re-checks that the release does not exist, and runs `gh release create "$TAG" --target "$GITHUB_REF_NAME" --title "$TAG" --notes "See https://github.com/usebruno/bruno/releases/tag/$TAG" <files>`; verify with `gh release view "$TAG" --json isDraft,targetCommitish,assets` that it is live, targets `release/vX.Y.Z`, and lists the AppImage, the x64/arm64/combined `.exe` installers, and their `.blockmap` files.
-- [ ] 5.2 Verify duplicate protection end to end: push another commit to the same released branch, confirm the run fails at `validate`, and confirm via `gh release view --json assets` that asset IDs and sizes are unchanged.
-- [ ] 5.3 Verify failure atomicity: introduce a temporary build failure on a test branch (for example `VERSION=bad` or a failing renderer build), confirm no tag and no release are created with `git ls-remote --tags` and `gh release view`, then revert the temporary change and confirm a rerun succeeds.
+- [x] 5.2 Verify duplicate protection end to end: push another commit to the same released branch, confirm the run fails at `validate`, and confirm via `gh release view --json assets` that asset IDs and sizes are unchanged.
+- [x] 5.3 Verify failure atomicity: introduce a temporary build failure on a test branch (for example `VERSION=bad` or a failing renderer build), confirm no tag and no release are created with `git ls-remote --tags` and `gh release view`, then revert the temporary change and confirm a rerun succeeds.
 - [x] 5.4 Set `publish: null` in `packages/bruno-electron/electron-builder-config.js` so electron-builder's CI `onTagOrDraft` default cannot construct a `GitHubPublisher`; verify with `CI=true npm run build:electron:linux` that the stock build succeeds without `GH_TOKEN` and that no `latest-linux.yml` or `app-update.yml` is produced.
 
 ## 6. Integration verification
 
 - [ ] 6.1 Exercise the whole workflow on a throwaway semver tag (for example `release/v0.0.1`) in a fork, checking job timings, cache hits for `~/.cache/electron` and `~/.cache/electron-builder`, total runtime under the 90-minute build timeout, and release asset names; then delete the test release and tag.
-- [ ] 6.2 Confirm the repository's Actions workflow-permission setting allows `contents: write` for `GITHUB_TOKEN`; if the publish job receives a 403, record the required settings change in `contributing.md` and re-verify the release job succeeds.
+- [x] 6.2 Confirm the repository's Actions workflow-permission setting allows `contents: write` for `GITHUB_TOKEN`; if the publish job receives a 403, record the required settings change in `contributing.md` and re-verify the release job succeeds.
 
 ## Workflow follow-up
 
