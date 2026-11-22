@@ -91,7 +91,7 @@ Unpacked directories and `builder-effective-config.yaml` are not uploaded. `publ
 ### Windows build on Ubuntu 24.04 with Wine
 
 - `runs-on: ubuntu-24.04` (pinned; `ubuntu-latest` is rolling to 26.04).
-- Install `wine64` and `wine32:i386` after `dpkg --add-architecture i386`; electron-builder needs Wine for `rcedit` and for generating/running the NSIS uninstaller. NSIS itself is a native Linux `makensis` from the downloaded toolset, and no signing is configured.
+- Install `wine`, `wine64`, and `wine32:i386` after `dpkg --add-architecture i386`. The `wine` metapackage is required because `wine64` / `wine32:i386` alone install the libraries and preloaders without the `/usr/bin/wine` launcher that electron-builder looks for. Electron-builder needs Wine for `rcedit` and for generating/running the NSIS uninstaller. NSIS itself is a native Linux `makensis` from the downloaded toolset, and no signing is configured. The job verifies `command -v wine` and `wine --version` before building so a missing launcher fails fast.
 - Force-install Windows PTY binaries because `npm ci` on Linux skips packages with `os: win32`:
 
 ```bash
@@ -140,7 +140,7 @@ Caches: `actions/setup-node` npm cache in the composite action, plus `~/.cache/e
 
 - **No CI remains after deleting seven workflows** -> Accepted by decision. Consequence documented in the proposal: no PR/main unit, e2e, CLI, lint, or benchmark checks, and any branch-protection required checks referencing those jobs will stop reporting.
 - **Live release on every release-branch push** -> Duplicate-tag failure makes publication a deliberate act. Failed builds create no tag or release, so retries are safe.
-- **Wine regressions on the runner image** -> The Windows job fails loudly rather than silently shipping a Linux-native or unpacked-only artifact. Pinning `ubuntu-24.04` avoids the 26.04 transition.
+- **Wine regressions on the runner image** -> The Windows job fails loudly rather than silently shipping a Linux-native or unpacked-only artifact. The `wine` metapackage (not just `wine64`/`wine32:i386`) is required for `/usr/bin/wine`; this was hit on the first CI run. Pinning `ubuntu-24.04` avoids the 26.04 transition.
 - **Missing PTY binary in a package** -> Explicit presence checks in both build jobs; force-install Windows x64/arm64 and verify Linux x64.
 - **`npm pkg set` writes to the checkout** -> Runner-only and never committed; the publish step uses release assets, not the working tree.
 - **Runner workflow-permission cap (403 on release creation)** -> Job-level `contents: write` is necessary but can be capped by repository settings; the workflow surfaces the `gh` error, and the fix is a settings change, not a workflow change.

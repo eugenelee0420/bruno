@@ -160,10 +160,12 @@ jobs:
         run: |
           sudo dpkg --add-architecture i386
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends wine64 wine32:i386
+          sudo apt-get install -y --no-install-recommends wine wine64 wine32:i386
 
       - name: Verify Wine
-        run: wine --version
+        run: |
+          command -v wine
+          wine --version
 
       - name: Setup Node Dependencies
         uses: ./.github/actions/common/setup-node-deps
