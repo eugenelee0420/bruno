@@ -20,7 +20,7 @@
 
 ## 4. Build Windows artifacts
 
-- [ ] 4.1 Add the `build-windows` job on `ubuntu-24.04` with the Wine install step (`dpkg --add-architecture i386`, `apt-get update`, `apt-get install -y --no-install-recommends wine wine64 wine32:i386`); verify `command -v wine` and `wine --version` succeed in the job before the build step. The first run failed because `wine64`/`wine32:i386` alone do not provide `/usr/bin/wine`; re-run to confirm the fix.
+- [x] 4.1 Add the `build-windows` job on `ubuntu-24.04` with the Wine install step (`dpkg --add-architecture i386`, `apt-get update`, `apt-get install -y --no-install-recommends wine wine64 wine32:i386`); verify `command -v wine` and `wine --version` succeed in the job before the build step. The first run failed because `wine64`/`wine32:i386` alone do not provide `/usr/bin/wine`; re-run to confirm the fix.
 - [x] 4.2 In that job, run the composite setup, `npm pkg set version="$VERSION" --workspace=packages/bruno-electron`, force-install `@lydell/node-pty-win32-x64@1.1.0` and `@lydell/node-pty-win32-arm64@1.1.0` with `--no-save --force`, run `npm run build:web`, then `npm run build:electron:win`; verify the job produces `out/*_x64_win.exe` and `out/*_arm64_win.exe` whose names contain `$VERSION` and that both `@lydell/node-pty-win32-*` directories are present.
 - [x] 4.3 Upload the installers (and `*.exe.blockmap` files) as the `windows-installers` Actions artifact with `if-no-files-found: error`; verify the artifact listing contains the x64, arm64, and combined `.exe` files and no `win-unpacked` directory.
 
@@ -33,7 +33,7 @@
 
 ## 6. Integration verification
 
-- [ ] 6.1 Exercise the whole workflow on a throwaway semver tag (for example `release/v0.0.1`) in a fork, checking job timings, cache hits for `~/.cache/electron` and `~/.cache/electron-builder`, total runtime under the 90-minute build timeout, and release asset names; then delete the test release and tag.
+- [x] 6.1 Exercise the whole workflow on a throwaway semver tag (for example `release/v0.0.1`) in a fork, checking job timings, cache hits for `~/.cache/electron` and `~/.cache/electron-builder`, total runtime under the 90-minute build timeout, and release asset names; then delete the test release and tag.
 - [x] 6.2 Confirm the repository's Actions workflow-permission setting allows `contents: write` for `GITHUB_TOKEN`; if the publish job receives a 403, record the required settings change in `contributing.md` and re-verify the release job succeeds.
 
 ## Workflow follow-up
